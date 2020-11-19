@@ -23,7 +23,7 @@ cd files
 for i in "${URLS[@]}"
 do
 	echo "Downloading $i"
-	curl --header "Authorization: token $GITHUB_TOKEN" --header "Accept: application/vnd.github.v3.raw" --header "User-Agent: ${OWNER}/${REPO} (curl v7.47.0)" --time-cond "$CACHE" -LO --remote-name $i
+	curl --verbose -H "Authorization: token $GITHUB_TOKEN" --header "Accept: application/vnd.github.v3.raw" --header "User-Agent: ${OWNER}/${REPO} (curl v7.47.0)" -LO --remote-name $i
 done
 
 echo "Files downloaded!"
