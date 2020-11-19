@@ -1,0 +1,10 @@
+  
+name: C++ code check using clang/cppcheck/flawfinder
+description: Check your pull requests against cppcheck, flawfinder and clang.
+author: Nicolas Aubry
+branding:
+  icon: check-circle
+  color: green
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
