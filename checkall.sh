@@ -22,8 +22,8 @@ mkdir files
 cd files
 for i in "${URLS[@]}"
 do
-   echo "Downloading $i"
-   curl -H "Authorization: token $GITHUB_TOKEN" -LOk --remote-name $i 
+	echo "Downloading $i"
+	curl --header "Authorization: token $GITHUB_TOKEN" --header "Accept: application/vnd.github.v3.raw" --header "User-Agent: ${OWNER}/${REPO} (curl v7.47.0)" --time-cond "$CACHE" -LO --remote-name $i
 done
 
 echo "Files downloaded!"
@@ -31,7 +31,7 @@ echo "Performing checkup:"
 clang-tidy --version
 clang-tidy *.cpp -checks=boost-*,bugprone-*,performance-*,readability-*,portability-*,modernize-*,clang-analyzer-cplusplus-*,clang-analyzer-*,cppcoreguidelines-* > clang-tidy-report.txt
 
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++11 --language=c++ --output-file=cppcheck-report.txt *
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++11 --language=c++ --output-file=cppcheck-report.txt 
 
 flawfinder --columns --context --singleline . > flawfinder-report.txt
 
