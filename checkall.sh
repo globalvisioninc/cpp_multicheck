@@ -25,9 +25,12 @@ do
 	echo "Downloading $i"
 	#curl -u naubryGV:$GITHUB_TOKEN -s $i
 	#echo "Name without web params: ${i%%\?*}"
-	curl -H "Authorization: token $GITHUB_TOKEN" --header "Accept: application/vnd.github.v3.raw" --header "User-Agent: ${OWNER}/${REPO} (curl v7.47.0)" -L --remote-name $i
+	FILENAME=`echo ${i##*/}`
+	FILENAME=`echo ${$FILENAME%%\?*}`
+	echo $FILENAME
+	curl -H "Authorization: token $GITHUB_TOKEN" --header "Accept: application/vnd.github.v3.raw" --header "User-Agent: ${OWNER}/${REPO} (curl v7.47.0)" -L -o ${i%%\?*} $i
+	basename ${i%%\?*}
 	#--remote-name
-	#-o ${i%%\?*}
 done
 
 echo "Files downloaded!"
