@@ -24,7 +24,8 @@ for i in "${URLS[@]}"
 do
 	echo "Downloading $i"
 	curl -u naubryGV:$GITHUB_TOKEN -s $i
-#	curl --verbose -H "Authorization: token $GITHUB_TOKEN" --header "Accept: application/vnd.github.v3.raw" --header "User-Agent: ${OWNER}/${REPO} (curl v7.47.0)" -LO --remote-name $i
+	echo "Name without web params: ${i%%\?*}"
+	curl --verbose -H "Authorization: token $GITHUB_TOKEN" --header "Accept: application/vnd.github.v3.raw" --header "User-Agent: ${OWNER}/${REPO} (curl v7.47.0)" -LO --remote-name $i -o ${i%%\?*}
 done
 
 echo "Files downloaded!"
