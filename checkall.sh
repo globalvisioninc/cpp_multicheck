@@ -12,7 +12,7 @@ curl -H "Authorization: token $GITHUB_TOKEN" $FILES_LINK > files.json
 JSON_DEBUG=`cat files.json`
 echo "Json file:"
 echo "$JSON_DEBUG"
-FILES_URLS_STRING=`jq -r '.[].raw_url' files.json`
+FILES_URLS_STRING=`jq -r '.[].contents_url' files.json`
 
 readarray -t URLS <<<"$FILES_URLS_STRING"
 
