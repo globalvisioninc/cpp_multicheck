@@ -7,8 +7,9 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
 fi
 
 # Some prerequisites
- curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-clang-format.py
- chmod +x run-clang-format.py
+# We're using our own version for now
+# curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-clang-format.py
+chmod +x run-clang-format.py
 
 # Now let's get the modified files
 echo "Event path: $GITHUB_EVENT_PATH"
