@@ -1,0 +1,8 @@
+# Format Style Options - Created with Clang Power Tools
+---
+Language: Cpp
+BasedOnStyle: Microsoft
+ColumnLimit: 180
+Standard: c++17
+UseTab: Always
+...
