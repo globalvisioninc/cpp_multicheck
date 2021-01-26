@@ -9,6 +9,12 @@ fi
 # DEBUG
 ls -la
 pwd
+echo "/github/home:"
+ls -la /github/home
+echo "/github/workspace:"
+ls -la /github/workspace
+echo "/github/workflow:"
+ls -la /github/workflow
 
 
 # Some prerequisites
