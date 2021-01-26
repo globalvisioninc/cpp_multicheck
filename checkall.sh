@@ -44,7 +44,7 @@ flawfinder --version
 flawfinder --columns --context --singleline ./files/ > flawfinder-report.txt
 
 clang-format --version
-./run-clang-format.py --style="{BasedOnStyle:Microsoft,UseTab:Always,ColumnLimit:180,Language:Cpp}" ./files/* > clang-format-report.txt
+./run-clang-format.py --style="{BasedOnStyle: Microsoft, UseTab: Always, ColumnLimit: 180, Language: Cpp}" ./files/* > clang-format-report.txt
 
 #PAYLOAD_TIDY=`cat clang-tidy-report.txt`
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
