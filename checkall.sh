@@ -30,6 +30,7 @@ done
 
 echo "Files downloaded!"
 ls -la
+cd ..
 
 echo "Performing checkup:"
 # We can't use clang-tidy without checking out the whole repo, or adding a compilation database, so skipping for now
@@ -37,13 +38,13 @@ echo "Performing checkup:"
 #clang-tidy *.cpp -checks=boost-*,bugprone-*,performance-*,readability-*,portability-*,modernize-*,clang-analyzer-cplusplus-*,clang-analyzer-*,cppcoreguidelines-* > clang-tidy-report.txt
 
 ccpcheck --version
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++11 --language=c++ --output-file=cppcheck-report.txt *
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++11 --language=c++ --output-file=cppcheck-report.txt ./files/*
 
 flawfinder --version
-flawfinder --columns --context --singleline . > flawfinder-report.txt
+flawfinder --columns --context --singleline ./files/ > flawfinder-report.txt
 
 clang-format --version
-./../run-clang-format.py --style='{BasedOnStyle: Microsoft, UseTab: Always, ColumnLimit: 180, Language: Cpp}' ./* > clang-format-report.txt
+./run-clang-format.py --style="{BasedOnStyle:Microsoft,UseTab:Always,ColumnLimit:180,Language:Cpp}" ./files/* > clang-format-report.txt
 
 #PAYLOAD_TIDY=`cat clang-tidy-report.txt`
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
