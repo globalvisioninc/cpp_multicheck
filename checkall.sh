@@ -7,7 +7,7 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
 fi
 
 # Some prerequisites
-wget https://github.com/Sarcasm/run-clang-format/blob/master/run-clang-format.py
+ curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-clang-format.py
 
 # Now let's get the modified files
 echo "Event path: $GITHUB_EVENT_PATH"
@@ -46,7 +46,8 @@ cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c+
 flawfinder --version
 flawfinder --columns --context --singleline . > flawfinder-report.txt
 
-./../run-clang-format.py --style=file ./* > clang-format-report.txt
+clang-format --version
+./../run-clang-format.py --style='{BasedOnStyle: Microsoft, UseTab: Always, ColumnLimit: 180, Language: Cpp}' ./* > clang-format-report.txt
 
 #PAYLOAD_TIDY=`cat clang-tidy-report.txt`
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
