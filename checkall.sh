@@ -6,15 +6,11 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
 	exit 1
 fi
 
-# DEBUG
-ls -la
-pwd
-echo "/"
-ls -la /
 
 # Some prerequisites
 # We're using our own version for now
 # curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-clang-format.py
+cp /run-clang-format.py .
 chmod +x ./run-clang-format.py
 
 # Now let's get the modified files
