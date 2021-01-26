@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
-LABEL com.github.actions.name="cpp-clang-check"
-LABEL com.github.actions.description="Check your pull requests against cppcheck, clang and flawfinder."
+LABEL com.github.actions.name="cpp-multicheck"
+LABEL com.github.actions.description="Check your pull requests against cppcheck, clang-format and flawfinder."
 LABEL com.github.actions.icon="check-circle"
 LABEL com.github.actions.color="green"
 
