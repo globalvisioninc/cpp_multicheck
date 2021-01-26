@@ -8,6 +8,7 @@ fi
 
 # Some prerequisites
  curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-clang-format.py
+ chmod +x run-clang-format.py
 
 # Now let's get the modified files
 echo "Event path: $GITHUB_EVENT_PATH"
@@ -41,7 +42,7 @@ echo "Performing checkup:"
 #clang-tidy *.cpp -checks=boost-*,bugprone-*,performance-*,readability-*,portability-*,modernize-*,clang-analyzer-cplusplus-*,clang-analyzer-*,cppcoreguidelines-* > clang-tidy-report.txt
 
 ccpcheck --version
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++17 --language=c++ --output-file=cppcheck-report.txt *
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++11 --language=c++ --output-file=cppcheck-report.txt *
 
 flawfinder --version
 flawfinder --columns --context --singleline . > flawfinder-report.txt
