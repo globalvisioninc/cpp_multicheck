@@ -12,7 +12,7 @@ WORKDIR /build
 RUN apt-get update
 RUN apt-get -qq -y install python curl clang-tidy cmake jq clang cppcheck clang-format flawfinder
 
-ADD checkall.sh /entrypoint.sh
-ADD run-clang-format.py /build/run-clang-format.py
+COPY checkall.sh /entrypoint.sh
+COPY run-clang-format.py ./run-clang-format.py
 COPY . .
 CMD ["bash", "/entrypoint.sh"]
