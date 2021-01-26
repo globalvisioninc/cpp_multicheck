@@ -15,14 +15,9 @@ echo "Event path: $GITHUB_EVENT_PATH"
 FILES_LINK=`jq -r '.pull_request._links.self.href' "$GITHUB_EVENT_PATH"`/files
 echo "Files = $FILES_LINK"
 curl -H "Authorization: token $GITHUB_TOKEN" $FILES_LINK > files.json
-JSON_DEBUG=`cat files.json`
-echo "Json file:"
-echo "$JSON_DEBUG"
 FILES_URLS_STRING=`jq -r '.[].contents_url' files.json`
 
 readarray -t URLS <<<"$FILES_URLS_STRING"
-
-echo "File names: $URLS"
 
 mkdir files
 cd files
