@@ -86,11 +86,22 @@ curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: appli
 
 OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
 OUTPUT+=$'\n```\n'
+
+# We add issue where this would not work when the report is too big
+# So let's split the file and only display the first 500 lines
+REPORT_LINE_NUMBER=$(< clang-format-report.txt wc -l)
+if [ $REPORT_LINE_NUMBER -gt 500 ]
+then
+head -n K clang-format-report.txt > tmp.clang-format-report.txt
+PAYLOAD_FORMAT=`cat tmp.clang-format-report.txt`
+OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 500 LINES**:\n'
+fi
 OUTPUT+="$PAYLOAD_FORMAT"
 OUTPUT+=$'\n```\n' 
 
-# We need to change a bit as output can be very large
-# Let's format the report into json
-cat clang-format-report.txt | jq --raw-input . > clang-format.json
-jq -n -r --slurpfile body clang-format.json '.body = $body' > body.json
-curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/json" --data @body.json "$COMMENTS_URL"
+#cat clang-format-report.txt | jq --raw-input . > clang-format.json
+#jq -n -r --slurpfile body clang-format.json '.body = $body' > body.json
+#curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/json" --data @body.json "$COMMENTS_URL"
+
+PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
