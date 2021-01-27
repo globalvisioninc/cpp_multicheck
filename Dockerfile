@@ -1,4 +1,4 @@
-FROM ubuntu:ubuntu-20.04
+FROM ubuntu:20.04
 
 LABEL com.github.actions.name="cpp-multicheck"
 LABEL com.github.actions.description="Check your pull requests against cppcheck, clang-format and flawfinder."
