@@ -85,7 +85,6 @@ PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 
 OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
-OUTPUT+=$'\n```\n'
 
 # We add issue where this would not work when the report is too big
 # So let's split the file and only display the first 500 lines
@@ -96,6 +95,8 @@ head -n K clang-format-report.txt > tmp.clang-format-report.txt
 PAYLOAD_FORMAT=`cat tmp.clang-format-report.txt`
 OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 500 LINES**:\n'
 fi
+
+OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_FORMAT"
 OUTPUT+=$'\n```\n' 
 
