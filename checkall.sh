@@ -89,5 +89,8 @@ OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_FORMAT"
 OUTPUT+=$'\n```\n' 
 
-PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+# We need to change a bit as output can be very large
+# Let's format the report into json
+cat clang-format-report.txt | jq --raw-input . > clang-format.json
+PAYLOAD=$(jq -n -r --slurpfile body clang-format.json '.body = $body')
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
