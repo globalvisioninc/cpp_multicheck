@@ -92,7 +92,5 @@ OUTPUT+=$'\n```\n'
 # We need to change a bit as output can be very large
 # Let's format the report into json
 cat clang-format-report.txt | jq --raw-input . > clang-format.json
-echo "\"" > body.json
-jq -n -r --slurpfile body clang-format.json '.body = $body' >> body.json
-echo "\"" >> body.json
+jq -n -r --slurpfile body clang-format.json '.body = $body' > body.json
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/json" --data @body.json "$COMMENTS_URL"
