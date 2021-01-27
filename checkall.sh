@@ -39,13 +39,13 @@ echo "Performing checkup:"
 #clang-tidy *.cpp -checks=boost-*,bugprone-*,performance-*,readability-*,portability-*,modernize-*,clang-analyzer-cplusplus-*,clang-analyzer-*,cppcoreguidelines-* > clang-tidy-report.txt
 
 cppcheck --version
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++11 --language=c++ --output-file=cppcheck-report.txt ./files/*
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++11 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,h,c,hpp}
 
 flawfinder --version
 flawfinder --columns --context --singleline ./files/ > flawfinder-report.txt
 
 clang-format --version
-./run-clang-format.py --style="{BasedOnStyle: Microsoft, UseTab: Always, ColumnLimit: 180, Language: Cpp}" ./files/* > clang-format-report.txt
+./run-clang-format.py --style="{BasedOnStyle: Microsoft, UseTab: Always, ColumnLimit: 180, Language: Cpp}" ./files/*.{cpp,h,c,hpp} > clang-format-report.txt
 
 #PAYLOAD_TIDY=`cat clang-tidy-report.txt`
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
@@ -73,16 +73,21 @@ OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_CPPCHECK"
 OUTPUT+=$'\n```\n' 
 
-OUTPUT+=$'\n\n**FLAWFINDER WARNINGS**:\n'
+PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
+
+OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
 OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_FLAWFINDER"
 OUTPUT+=$'\n```\n' 
 
-OUTPUT+=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
+PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
+
+OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
 OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_FORMAT"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
-
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
