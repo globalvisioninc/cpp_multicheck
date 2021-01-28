@@ -49,18 +49,17 @@ clang-format --version
 
 
 # We don't want very long report, let's trunk them at 500 lines max
-REPORT_LINE_NUMBER=$(< cppcheck-report.txt wc -l)
-if [ $REPORT_LINE_NUMBER -gt 500 ]
+CPPCHECK_LINE_NUMBER=$(< cppcheck-report.txt wc -l)
+if [ $CPPCHECK_LINE_NUMBER -gt 500 ]
 then
 head -n K cppcheck-report.txt > tmp.cppcheck-report.txt
 PAYLOAD_CPPCHECK=`cat tmp.cppcheck-report.txt`
-OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 500 LINES**:\n'
 else
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
 fi
 
-REPORT_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
-if [ $REPORT_LINE_NUMBER -gt 500 ]
+FLAWFINDER_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
+if [ $FLAWFINDER_LINE_NUMBER -gt 500 ]
 then
 head -n K flawfinder-report.txt > tmp.flawfinder-report.txt
 PAYLOAD_FLAWFINDER=`cat tmp.flawfinder-report.txt`
@@ -69,8 +68,8 @@ else
 PAYLOAD_FLAWFINDER=`cat flawfinder-report.txt`
 fi
 
-REPORT_LINE_NUMBER=$(< clang-format-report.txt wc -l)
-if [ $REPORT_LINE_NUMBER -gt 500 ]
+CFORMAT_LINE_NUMBER=$(< clang-format-report.txt wc -l)
+if [ $CFORMAT_LINE_NUMBER -gt 500 ]
 then
 head -n K clang-format-report.txt > tmp.clang-format-report.txt
 PAYLOAD_FORMAT=`cat tmp.clang-format-report.txt`
@@ -90,6 +89,10 @@ echo "Clang-format errors:"
 echo $PAYLOAD_FORMAT
 
 OUTPUT=$'\n\n**CPPCHECK WARNINGS**:\n'
+if [ $CPPCHECK_LINE_NUMBER -gt 500 ]
+then
+OUTPUT+=$'\n\n**OUTPUT TOO LONG - ONLY SHOWING FIRST 500 LINES**:\n'
+fi
 OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_CPPCHECK"
 OUTPUT+=$'\n```\n' 
@@ -98,6 +101,10 @@ PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 
 OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
+if [ $FLAWFINDER_LINE_NUMBER -gt 500 ]
+then
+OUTPUT+=$'\n\n**OUTPUT TOO LONG - ONLY SHOWING FIRST 500 LINES**:\n'
+fi
 OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_FLAWFINDER"
 OUTPUT+=$'\n```\n' 
@@ -106,6 +113,10 @@ PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 
 OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
+if [ $CFORMAT_LINE_NUMBER -gt 500 ]
+then
+OUTPUT+=$'\n\n**OUTPUT TOO LONG - ONLY SHOWING FIRST 500 LINES**:\n'
+fi
 OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_FORMAT"
 OUTPUT+=$'\n```\n' 
