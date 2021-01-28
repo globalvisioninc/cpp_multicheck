@@ -34,39 +34,60 @@ ls -la
 cd ..
 
 echo "Performing checkup:"
-# We can't use clang-tidy without checking out the whole repo, or adding a compilation database, so skipping for now
-#clang-tidy --version
-#clang-tidy *.cpp -checks=boost-*,bugprone-*,performance-*,readability-*,portability-*,modernize-*,clang-analyzer-cplusplus-*,clang-analyzer-*,cppcoreguidelines-* > clang-tidy-report.txt
 
+# cppcheck
 cppcheck --version
 cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --std=c++11 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,h,c,hpp}
 
+# flawfinder
 flawfinder --version
-flawfinder --columns --context --singleline ./files/ > flawfinder-report.txt
+flawfinder --columns --context --singleline ./files/*.{cpp,h,c,hpp} > flawfinder-report.txt
 
+# clang-format
 clang-format --version
 ./run-clang-format.py --style="{BasedOnStyle: Microsoft, UseTab: Always, ColumnLimit: 180, Language: Cpp}" ./files/*.{cpp,h,c,hpp} > clang-format-report.txt
 
-#PAYLOAD_TIDY=`cat clang-tidy-report.txt`
+
+# We don't want very long report, let's trunk them at 500 lines max
+REPORT_LINE_NUMBER=$(< cppcheck-report.txt wc -l)
+if [ $REPORT_LINE_NUMBER -gt 500 ]
+then
+head -n K cppcheck-report.txt > tmp.cppcheck-report.txt
+PAYLOAD_CPPCHECK=`cat tmp.cppcheck-report.txt`
+OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 500 LINES**:\n'
+else
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
+fi
+
+REPORT_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
+if [ $REPORT_LINE_NUMBER -gt 500 ]
+then
+head -n K flawfinder-report.txt > tmp.flawfinder-report.txt
+PAYLOAD_FLAWFINDER=`cat tmp.flawfinder-report.txt`
+OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 500 LINES**:\n'
+else
 PAYLOAD_FLAWFINDER=`cat flawfinder-report.txt`
+fi
+
+REPORT_LINE_NUMBER=$(< clang-format-report.txt wc -l)
+if [ $REPORT_LINE_NUMBER -gt 500 ]
+then
+head -n K clang-format-report.txt > tmp.clang-format-report.txt
+PAYLOAD_FORMAT=`cat tmp.clang-format-report.txt`
+OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 500 LINES**:\n'
+else
 PAYLOAD_FORMAT=`cat clang-format-report.txt`
+fi
+
 COMMENTS_URL=$(cat $GITHUB_EVENT_PATH | jq -r .pull_request.comments_url)
   
 echo $COMMENTS_URL
-#echo "Clang-tidy errors:"
-#echo $PAYLOAD_TIDY
 echo "Cppcheck errors:"
 echo $PAYLOAD_CPPCHECK
 echo "Flawfinder errors:"
 echo $PAYLOAD_FLAWFINDER
 echo "Clang-format errors:"
 echo $PAYLOAD_FORMAT
-
-#OUTPUT=$'**CLANG-TIDY WARNINGS**:\n'
-#OUTPUT+=$'\n```\n'
-#OUTPUT+="$PAYLOAD_TIDY"
-#OUTPUT+=$'\n```\n'
 
 OUTPUT=$'\n\n**CPPCHECK WARNINGS**:\n'
 OUTPUT+=$'\n```\n'
@@ -85,24 +106,9 @@ PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 
 OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
-
-# We add issue where this would not work when the report is too big
-# So let's split the file and only display the first 500 lines
-REPORT_LINE_NUMBER=$(< clang-format-report.txt wc -l)
-if [ $REPORT_LINE_NUMBER -gt 500 ]
-then
-head -n K clang-format-report.txt > tmp.clang-format-report.txt
-PAYLOAD_FORMAT=`cat tmp.clang-format-report.txt`
-OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 500 LINES**:\n'
-fi
-
 OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_FORMAT"
 OUTPUT+=$'\n```\n' 
-
-#cat clang-format-report.txt | jq --raw-input . > clang-format.json
-#jq -n -r --slurpfile body clang-format.json '.body = $body' > body.json
-#curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/json" --data @body.json "$COMMENTS_URL"
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
