@@ -45,7 +45,7 @@ flawfinder --columns --context --singleline ./files/*.{cpp,h,c,hpp} > flawfinder
 
 # clang-format
 clang-format --version
-./run-clang-format.py --style="{BasedOnStyle: Microsoft, UseTab: Always, ColumnLimit: 180, Language: Cpp}" ./files/*.{cpp,h,c,hpp} > clang-format-report.txt
+./run-clang-format.py --style="{BasedOnStyle: Microsoft, UseTab: Always, ColumnLimit: 180, NamespaceIndentation: All, Language: Cpp}" ./files/*.{cpp,h,c,hpp} > clang-format-report.txt
 
 
 # We don't want very long report, let's trunk them at 500 lines max
