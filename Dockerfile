@@ -5,7 +5,7 @@ LABEL com.github.actions.description="Check your pull request's modified files a
 LABEL com.github.actions.icon="check-circle"
 LABEL com.github.actions.color="green"
 
-LABEL repository="https://github.com/naubryGV/cpp-multicheck/"
+LABEL repository="https://github.com/globalvisioninc/cpp-multicheck/"
 LABEL maintainer="naubryGV <73480455+naubryGV@users.noreply.github.com>"
 
 WORKDIR /build
