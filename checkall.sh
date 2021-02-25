@@ -52,7 +52,7 @@ clang-format --version
 CPPCHECK_LINE_NUMBER=$(< cppcheck-report.txt wc -l)
 if [ $CPPCHECK_LINE_NUMBER -gt 250 ]
 then
-head -n K cppcheck-report.txt > tmp.cppcheck-report.txt
+head -n 250 cppcheck-report.txt > tmp.cppcheck-report.txt
 PAYLOAD_CPPCHECK=`cat tmp.cppcheck-report.txt`
 else
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
@@ -61,7 +61,7 @@ fi
 FLAWFINDER_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
 then
-head -n K flawfinder-report.txt > tmp.flawfinder-report.txt
+head -n 250 flawfinder-report.txt > tmp.flawfinder-report.txt
 PAYLOAD_FLAWFINDER=`cat tmp.flawfinder-report.txt`
 OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 250 LINES**:\n'
 else
@@ -71,7 +71,7 @@ fi
 CFORMAT_LINE_NUMBER=$(< clang-format-report.txt wc -l)
 if [ $CFORMAT_LINE_NUMBER -gt 250 ]
 then
-head -n K clang-format-report.txt > tmp.clang-format-report.txt
+head -n 250 clang-format-report.txt > tmp.clang-format-report.txt
 PAYLOAD_FORMAT=`cat tmp.clang-format-report.txt`
 OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 250 LINES**:\n'
 else
