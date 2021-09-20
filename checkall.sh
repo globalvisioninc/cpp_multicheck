@@ -37,7 +37,7 @@ echo "Performing checkup:"
 
 # cppcheck
 cppcheck --version
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++17 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,h,c,hpp}
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++17 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,c,hpp}
 
 # flawfinder
 flawfinder --version
