@@ -36,12 +36,12 @@ cd ..
 echo "Performing checkup:"
 
 # cppcheck
-cppcheck --version
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++17 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,c,hpp}
+# cppcheck --version
+# cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++17 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,c,hpp}
 
 # flawfinder
-flawfinder --version
-flawfinder --columns --context --singleline ./files/*.{cpp,h,c,hpp} > flawfinder-report.txt
+# flawfinder --version
+# flawfinder --columns --context --singleline ./files/*.{cpp,h,c,hpp} > flawfinder-report.txt
 
 # clang-format
 clang-format --version
@@ -98,7 +98,7 @@ OUTPUT+="$PAYLOAD_CPPCHECK"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
-curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
+#curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 
 OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
@@ -110,8 +110,10 @@ OUTPUT+="$PAYLOAD_FLAWFINDER"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+if [ $FLAWFINDER_LINE_NUMBER -gt 27 ]
+then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
-
+fi
 OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
 if [ $CFORMAT_LINE_NUMBER -gt 250 ]
 then
@@ -122,4 +124,7 @@ OUTPUT+="$PAYLOAD_FORMAT"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+if [ $CFORMAT_LINE_NUMBER -gt 8 ]
+then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
+fi
