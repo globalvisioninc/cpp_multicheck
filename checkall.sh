@@ -36,12 +36,12 @@ cd ..
 echo "Performing checkup:"
 
 # cppcheck
-# cppcheck --version
-# cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++17 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,c,hpp}
+cppcheck --version
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++17 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,c,hpp}
 
 # flawfinder
-# flawfinder --version
-# flawfinder --columns --context --singleline ./files/*.{cpp,h,c,hpp} > flawfinder-report.txt
+flawfinder --version
+flawfinder --columns --context --singleline ./files/*.{cpp,h,c,hpp} > flawfinder-report.txt
 
 # clang-format
 clang-format --version
