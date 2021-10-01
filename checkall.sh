@@ -98,7 +98,7 @@ OUTPUT+="$PAYLOAD_CPPCHECK"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
-curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
+#curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 
 OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
@@ -110,8 +110,10 @@ OUTPUT+="$PAYLOAD_FLAWFINDER"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+if [ $FLAWFINDER_LINE_NUMBER -gt 27 ]
+then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
-
+fi
 OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
 if [ $CFORMAT_LINE_NUMBER -gt 250 ]
 then
@@ -122,4 +124,7 @@ OUTPUT+="$PAYLOAD_FORMAT"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+if [ $CFORMAT_LINE_NUMBER -gt 8 ]
+then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
+fi
