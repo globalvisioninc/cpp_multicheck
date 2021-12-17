@@ -10,7 +10,7 @@ LABEL maintainer="naubryGV <73480455+naubryGV@users.noreply.github.com>"
 
 WORKDIR /build
 RUN apt-get update
-RUN apt-get -qq -y install python curl clang-tidy cmake jq clang cppcheck clang-format flawfinder
+RUN apt-get -qq -y install python curl clang-tidy cmake jq clang cppcheck clang-format-12 flawfinder
 
 COPY checkall.sh /entrypoint.sh
 CMD ["bash", "/entrypoint.sh"]
