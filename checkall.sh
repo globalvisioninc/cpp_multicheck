@@ -10,6 +10,7 @@ fi
 # Some prerequisites
 curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-clang-format.py
 chmod +x ./run-clang-format.py
+ERRORED=false
 
 # Now let's get the modified files
 echo "Event path: $GITHUB_EVENT_PATH"
@@ -114,7 +115,7 @@ if [ $FLAWFINDER_LINE_NUMBER -gt 27 ]
 then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 fi
-OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
+OUTPUT=$'\n\n**CLANG-FORMAT ERROR - PLEASE FIX TO BE ABLE TO MERGE**:\n'
 if [ $CFORMAT_LINE_NUMBER -gt 250 ]
 then
 OUTPUT+=$'\n\n**OUTPUT TOO LONG - ONLY SHOWING FIRST 250 LINES**:\n'
@@ -126,5 +127,11 @@ OUTPUT+=$'\n```\n'
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 if [ $CFORMAT_LINE_NUMBER -gt 8 ]
 then
+ERRORED=true
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
+fi
+
+# If we have an error, we want to set an error code so the workflow is seen as failed
+if [ "$ERRORED" = true ] ; then
+    exit 2
 fi
