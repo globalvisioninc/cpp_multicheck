@@ -115,7 +115,7 @@ if [ $FLAWFINDER_LINE_NUMBER -gt 27 ]
 then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 fi
-OUTPUT=$'\n\n**CLANG-FORMAT WARNINGS**:\n'
+OUTPUT=$'\n\n**CLANG-FORMAT ERROR - PLEASE FIX TO BE ABLE TO MERGE**:\n'
 if [ $CFORMAT_LINE_NUMBER -gt 250 ]
 then
 OUTPUT+=$'\n\n**OUTPUT TOO LONG - ONLY SHOWING FIRST 250 LINES**:\n'
