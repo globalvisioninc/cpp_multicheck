@@ -38,7 +38,7 @@ echo "Performing checkup:"
 
 # cppcheck
 cppcheck --version
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++17 --language=c++ --output-file=cppcheck-report.txt ./files/*.{cpp,c,hpp}
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++17 --language=c++ --output-file=cppcheck-report.txt --suppress='*:.files/ArtProof.*' --suppress='*:.files/gveImageView.*' ./files/*.{cpp,c,hpp}
 
 # flawfinder
 flawfinder --version
@@ -99,7 +99,7 @@ OUTPUT+="$PAYLOAD_CPPCHECK"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
-#curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
+curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 
 OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
