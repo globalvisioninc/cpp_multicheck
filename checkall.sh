@@ -55,6 +55,7 @@ if [ $CPPCHECK_LINE_NUMBER -gt 250 ]
 then
 head -n 250 cppcheck-report.txt > tmp.cppcheck-report.txt
 PAYLOAD_CPPCHECK=`cat tmp.cppcheck-report.txt`
+OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 250 LINES**:\n'
 else
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
 fi
@@ -99,8 +100,10 @@ OUTPUT+="$PAYLOAD_CPPCHECK"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
+if [ $CPPCHECK_LINE_NUMBER -gt 5 ]
+then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
-
+fi
 OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
 then
