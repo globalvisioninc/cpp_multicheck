@@ -100,7 +100,7 @@ OUTPUT+="$PAYLOAD_CPPCHECK"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
-if [ $CPPCHECK_LINE_NUMBER -gt 7 ]
+if [ $CPPCHECK_LINE_NUMBER -gt 13 ]
 then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 fi
