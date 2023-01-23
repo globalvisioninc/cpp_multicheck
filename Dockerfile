@@ -10,7 +10,9 @@ LABEL maintainer="naubryGV <73480455+naubryGV@users.noreply.github.com>"
 
 WORKDIR /build
 RUN apt-get update
-RUN apt-get -qq -y install python-is-python3 python3-pip curl clang-tidy cmake cppcheck jq clang clang-format-12 flawfinder
+RUN apt-get -qq -y install python-is-python3 python3-pip curl clang-tidy cmake cppcheck jq clang clang-format-12
+RUN export PYTHONPATH=${PYTHONPATH}:${HOME}/.local/lib/python3.10/site-packages
+RUN pip3 install --user flawfinder
 
 COPY checkall.sh /entrypoint.sh
 CMD ["bash", "/entrypoint.sh"]
