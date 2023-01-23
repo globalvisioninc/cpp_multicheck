@@ -8,6 +8,7 @@ fi
 
 
 # Some prerequisites
+PATH=$PATH:$HOME/.local/bin
 curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-clang-format.py
 chmod +x ./run-clang-format.py
 ERRORED=false
