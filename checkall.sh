@@ -12,6 +12,10 @@ curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-
 chmod +x ./run-clang-format.py
 ERRORED=false
 
+python venv pythonEnv
+source pythonEnv/bin/activate
+pip install flawfinder
+
 # Now let's get the modified files
 echo "Event path: $GITHUB_EVENT_PATH"
 FILES_LINK=`jq -r '.pull_request._links.self.href' "$GITHUB_EVENT_PATH"`/files

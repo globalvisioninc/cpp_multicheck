@@ -10,7 +10,7 @@ LABEL maintainer="naubryGV <73480455+naubryGV@users.noreply.github.com>"
 
 WORKDIR /build
 RUN apt-get update
-RUN apt-get -qq -y install python-is-python3 python3-pip curl clang-tidy cmake cppcheck jq clang clang-format-12 flawfinder
+RUN apt-get -qq -y install python-is-python3 python3-pip curl clang-tidy cmake cppcheck jq clang clang-format-12
 
 COPY checkall.sh /entrypoint.sh
 CMD ["bash", "/entrypoint.sh"]
