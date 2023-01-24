@@ -13,7 +13,6 @@ chmod +x ./run-clang-format.py
 ERRORED=false
 
 #setup flawfinder
-sudo pip install
 pip install flawfinder
 
 # Now let's get the modified files
