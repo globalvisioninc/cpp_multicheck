@@ -12,7 +12,8 @@ curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-
 chmod +x ./run-clang-format.py
 ERRORED=false
 
-#setup python virtual env for flawfinder
+#setup flawfinder
+sudo pip install
 pip install flawfinder
 
 # Now let's get the modified files
