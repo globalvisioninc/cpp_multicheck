@@ -12,6 +12,11 @@ curl -JLO https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-
 chmod +x ./run-clang-format.py
 ERRORED=false
 
+#setup python venv
+python3 -m venv PythonEnv
+source PythonEnv/bin/activate
+pip install flawfinder
+
 # Now let's get the modified files
 echo "Event path: $GITHUB_EVENT_PATH"
 FILES_LINK=`jq -r '.pull_request._links.self.href' "$GITHUB_EVENT_PATH"`/files
@@ -133,6 +138,9 @@ then
 ERRORED=true
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 fi
+
+#deactive python venv
+deactivate
 
 # If we have an error, we want to set an error code so the workflow is seen as failed
 if [ "$ERRORED" = true ] ; then
