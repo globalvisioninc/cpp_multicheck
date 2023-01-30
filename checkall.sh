@@ -43,7 +43,7 @@ echo "Performing checkup:"
 
 # cppcheck
 cppcheck --version
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++20 --language=c++ --output-file=cppcheck-report.txt --inline-suppr --suppress='*:./files/*ArtProof.*' --suppress='*:./files/*gveImageView.*' ./files/*.{cpp,c,hpp}
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++20 --language=c++ --output-file=cppcheck-report.txt --inline-suppr ./files/*.{cpp,c,hpp}
 
 # flawfinder
 flawfinder --version
