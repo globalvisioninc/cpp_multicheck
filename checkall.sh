@@ -101,6 +101,7 @@ curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: appli
 fi
 
 FLAWFINDER_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
+OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
 if ! grep -q "No hits found." flawfinder-report.txt
 then
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
