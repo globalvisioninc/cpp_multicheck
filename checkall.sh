@@ -65,16 +65,6 @@ else
 PAYLOAD_CPPCHECK=`cat cppcheck-report.txt`
 fi
 
-FLAWFINDER_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
-if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
-then
-head -n 250 flawfinder-report.txt > tmp.flawfinder-report.txt
-PAYLOAD_FLAWFINDER=`cat tmp.flawfinder-report.txt`
-OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 250 LINES**:\n'
-else
-PAYLOAD_FLAWFINDER=`cat flawfinder-report.txt`
-fi
-
 CFORMAT_LINE_NUMBER=$(< clang-format-report.txt wc -l)
 if [ $CFORMAT_LINE_NUMBER -gt 250 ]
 then
@@ -119,8 +109,17 @@ OUTPUT+="$PAYLOAD_FLAWFINDER"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
-if [ $FLAWFINDER_LINE_NUMBER -gt 27 ]
+if !grep -q "No hits found." "flawfinder-report.txt"
 then
+FLAWFINDER_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
+if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
+then
+head -n 250 flawfinder-report.txt > tmp.flawfinder-report.txt
+PAYLOAD_FLAWFINDER=`cat tmp.flawfinder-report.txt`
+OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 250 LINES**:\n'
+else
+PAYLOAD_FLAWFINDER=`cat flawfinder-report.txt`
+fi
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 fi
 OUTPUT=$'\n\n**CLANG-FORMAT ERROR - PLEASE FIX TO BE ABLE TO MERGE**:\n'
