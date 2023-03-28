@@ -101,16 +101,6 @@ curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: appli
 fi
 
 FLAWFINDER_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
-OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
-if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
-then
-OUTPUT+=$'\n\n**OUTPUT TOO LONG - ONLY SHOWING FIRST 250 LINES**:\n'
-fi
-OUTPUT+=$'\n```\n'
-OUTPUT+="$PAYLOAD_FLAWFINDER"
-OUTPUT+=$'\n```\n' 
-
-PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 if ! grep -q "No hits found." flawfinder-report.txt
 then
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
@@ -121,6 +111,10 @@ OUTPUT+=$'\n\n**OUTPUT TOO BIG - ONLY SHOWING FIRST 250 LINES**:\n'
 else
 PAYLOAD_FLAWFINDER=`cat flawfinder-report.txt`
 fi
+OUTPUT+=$'\n```\n'
+OUTPUT+="$PAYLOAD_FLAWFINDER"
+OUTPUT+=$'\n```\n' 
+PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 fi
 OUTPUT=$'\n\n**CLANG-FORMAT ERROR - PLEASE FIX TO BE ABLE TO MERGE**:\n'
