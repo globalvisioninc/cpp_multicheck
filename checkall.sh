@@ -99,6 +99,8 @@ if [ $CPPCHECK_LINE_NUMBER -gt 13 ]
 then
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
 fi
+
+FLAWFINDER_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
 OUTPUT=$'\n\n**FLAWFINDER WARNINGS**:\n'
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
 then
@@ -109,9 +111,8 @@ OUTPUT+="$PAYLOAD_FLAWFINDER"
 OUTPUT+=$'\n```\n' 
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
-if [ ! grep -q "No hits found." "flawfinder-report.txt" ]
+if [ ! grep "No hits found." "flawfinder-report.txt" ]
 then
-FLAWFINDER_LINE_NUMBER=$(< flawfinder-report.txt wc -l)
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
 then
 head -n 250 flawfinder-report.txt > tmp.flawfinder-report.txt
