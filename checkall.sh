@@ -110,11 +110,8 @@ OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_FLAWFINDER"
 OUTPUT+=$'\n```\n' 
 
-grep --help
-grep -q "No hits found." flawfinder-report.txt
-
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
-if [ ! grep -s "No hits found." flawfinder-report.txt ]
+if ! grep -q "No hits found." flawfinder-report.txt
 then
 if [ $FLAWFINDER_LINE_NUMBER -gt 250 ]
 then
