@@ -85,6 +85,8 @@ echo $PAYLOAD_FLAWFINDER
 echo "Clang-format errors:"
 echo $PAYLOAD_FORMAT
 
+if [ $CPPCHECK_LINE_NUMBER -gt 1 ]
+then
 OUTPUT=$'\n\n**CPPCHECK WARNINGS**:\n'
 if [ $CPPCHECK_LINE_NUMBER -gt 250 ]
 then
@@ -93,6 +95,7 @@ fi
 OUTPUT+=$'\n```\n'
 OUTPUT+="$PAYLOAD_CPPCHECK"
 OUTPUT+=$'\n```\n' 
+fi
 
 PAYLOAD=$(echo '{}' | jq --arg body "$OUTPUT" '.body = $body')
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/vnd.github.VERSION.text+json" --data "$PAYLOAD" "$COMMENTS_URL"
