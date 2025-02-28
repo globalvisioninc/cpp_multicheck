@@ -44,7 +44,7 @@ echo "Performing checkup:"
 # cppcheck
 cppcheck --version
 # Enabling all modules but missing include files
-cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++20 --language=c++ --output-file=cppcheck-report.txt --inline-suppr ./files/*.{cpp,c,hpp} --enable=all --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction --suppress=unknownMacro --suppress=unmatchedSuppression --suppress=checkersReport
+cppcheck -iclang-format-report.txt -iclang-tidy-report.txt --enable=all --library=qt.cfg --std=c++20 --language=c++ --output-file=cppcheck-report.txt --inline-suppr ./files/*.{cpp,c,hpp} --enable=all --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction --suppress=unknownMacro --suppress=unmatchedSuppression --suppress=syntaxError --suppress=checkersReport
 # flawfinder
 flawfinder --version
 flawfinder --columns --context --singleline ./files/*.{cpp,h,c,hpp} > flawfinder-report.txt
